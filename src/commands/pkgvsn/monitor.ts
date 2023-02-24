@@ -55,13 +55,13 @@ export default class PkgvsnMonitor extends SfCommand<creationStatus> {
   public async run(): Promise<creationStatus> {
     const { flags } = await this.parse(PkgvsnMonitor);
     const maxRuns = Math.floor(flags.timeout / secondsBetweenRuns);
-    const res: creationStatus = await this.getLatestStatus(1, maxRuns).catch((err: creationStatus) => {
+    const res: creationStatus | void = await this.getLatestStatus(1, maxRuns).catch((err: creationStatus) => {
       this.spinner.stop();
       this.createNotification(err);
     });
     this.spinner.stop();
-    this.createNotification(res);
-    return res;
+    this.createNotification(res as creationStatus);
+    return res as creationStatus;
   }
 
   private async getLatestStatus(curRun: number, maxRuns: number, prevStatus = ''): Promise<creationStatus> {
